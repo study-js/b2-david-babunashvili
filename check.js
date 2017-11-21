@@ -51,14 +51,16 @@ function checkConnected(locationData, firstId, secondId) {
 
     var check = function (firstId, lastId) {
 
-        var item = locationData.locations.filter(function (loc) {
+        var connectedLocations = locationData.locations.filter(function (loc) {
             return loc.Id == firstId;
-        })[0]['ConnectedLocationIds']; // get connected locations
+        });
 
-        item.forEach(function (childId) {
+        var connectedLocationIds = connectedLocations.length ? connectedLocations[0]['ConnectedLocationIds'] : []; // get connected locations 
+
+        connectedLocationIds.forEach(function (childId) {
 
             if (!passedCities.includes(childId) && !result) { // if is not passed & if target was not found
-               
+
                 passedCities.push(childId); // make city passed
 
                 if (childId != lastId) { // if is not target location
@@ -79,4 +81,4 @@ function checkConnected(locationData, firstId, secondId) {
 
 }
 
-console.log('Result: ',checkConnected(data, 5, 6)) // log result
+console.log('Result: ', checkConnected(data, 5, 6)) // log result

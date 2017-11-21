@@ -46,15 +46,6 @@ function checkConnected(locationData, firstId, secondId) {
     // get connected locations
     var firstLocationIds = firstLocation.length ? firstLocation[0]['ConnectedLocationIds'] : [];
 
-    // check one way
-    var checkOne = firstLocationIds.includes(secondId);
-
-    if (checkOne) {
-        return true;
-    }
-
-    // second check
-
     var passedCities = [firstId];
     var result = false;
 

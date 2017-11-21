@@ -32,32 +32,60 @@ var data = {
     ]
 }
 
-function checkConnected(locationData, firstId, secondId){
+/**
+ * @param  {Object} locationData
+ * @param  {Integer} firstId
+ * @param  {Integer} secondId
+ */
+function checkConnected(locationData, firstId, secondId) {
+
     //get first location object by ID if exists
-    var firstLocation = locationData.locations.filter(function(location){ return location.Id == firstId });
+    var firstLocation = locationData.locations.filter(function (location) {
+        return location.Id == firstId
+    });
     // get connected locations
     var firstLocationIds = firstLocation.length ? firstLocation[0]['ConnectedLocationIds'] : [];
-    
+
     // check one way
     var checkOne = firstLocationIds.includes(secondId);
-    
-    if(checkOne){
-      return true;
+
+    if (checkOne) {
+        return true;
     }
-    
-    // check two ways
-    var checkTwo = locationData.locations.filter(function(location){
-        // where ConnectedLocationIds includes second location
-        return location.ConnectedLocationIds.includes(secondId);  
-    }).filter(function(location){
-        return firstLocation[0]['ConnectedLocationIds'].includes(location.Id);
-    });
-    
-    return checkTwo.length ? true : false;
+
+    // second check
+
+    var passedCities = [firstId];
+    var result = false;
+
+    var check = function (firstId, lastId) {
+
+        var item = locationData.locations.filter(function (loc) {
+            return loc.Id == firstId;
+        })[0]['ConnectedLocationIds']; // get connected locations
+
+        item.forEach(function (childId) {
+
+            if (!passedCities.includes(childId) && !result) { // if is not passed & if target was not found
+               
+                passedCities.push(childId); // make city passed
+
+                if (childId != lastId) { // if is not target location
+                    check(childId, lastId); // try again
+                } else {
+                    result = true; // done
+                }
+            }
+
+        });
+    }
+
+    check(firstId, secondId); // run
+
+    console.log('Route: ', passedCities.join(' => ')) // log passed cities
+
+    return result;
+
 }
 
-console.log(checkConnected(data,3,5));
-
-
-
-
+console.log('Result: ',checkConnected(data, 5, 6)) // log result
